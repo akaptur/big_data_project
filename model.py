@@ -39,6 +39,8 @@ def raw_duplicate_count(duplicate_emails):
     return list_count
 
 
+#----Tagging the dataset with enriched info 
+
 def assign_status_to_garbage_leads(raw_leads,emails):
     garbage_lead = 0
     r_length = len(raw_leads)
@@ -79,34 +81,25 @@ def assign_status_to_rest(raw_leads,duplicate_emails):
     return raw_leads
 
 
-def write_test_file(filename, raw_leads):
+def write_test_file(raw_leads):
     output = raw_leads
-    file = open(filename, "w")
-    file.write("Lead ID,iContact Contact Id,First Name,Last Name,Email,Email Opt Out,Email Bounced Reason,Phone,Type,Position (Player),Other Phone,Title,Lead Owner,Company / Account,Description,Created By,Lead Source,Rating,Street,Street Line 1,City,State/Province,Zip/Postal Code,Country,Data Group,Status,Action")
-    file.write("\n")
+    csv_file = open('test_output.csv','w')
+    # writer = csv.writer("Lead ID,iContact Contact Id,First Name,Last Name,Email,Email Opt Out,Email Bounced Reason,Phone,Type,Position (Player),Other Phone,Title,Lead Owner,Company / Account,Description,Created By,Lead Source,Rating,Street,Street Line 1,City,State/Province,Zip/Postal Code,Country,Data Group,Status,Action")
+    # file.write("\n")
     r_length = len(raw_leads)
     for i in range(r_length):
-        row = raw_leads[i].values()
-        item = str(row)
-        file.write(item)
-        file.write(",")
-        file.write("\n")
-    file.close()
+        print raw_leads[i]
+        for key,value in raw_leads[i].items():
+            
+            print key,value 
+        import pdb; pdb.set_trace()
+        break 
 
-# def assess_duplicates(raw_leads,dupe_emails):
-#     pass
-#     # r_length = len(raw_leads)
-    # for i in range(r_length):
-    #     if raw_leads[i]['Email'] in dupe_emails:
-    #         print raw_leads[i]['First Name']
-    #         print raw_leads[i]['Last Name']
-    #     break 
 
-    # # for lead in raw_leads:
-    # #     if lead['Status'] == 'Duplicate':
-    # #         for i in range(duplicate_emails)
-    # #         print lead['First Name'],lead['Last Name'], 
-    # #         break 
+    # for j in full[i]:
+    # line = str(j) + ',' + str(i) + '\n'
+    # csv.write(line)
+
 
 def main():
     raw_leads = get_data()
@@ -115,7 +108,7 @@ def main():
     raw_duplicate_count(duplicate_emails)
     assign_status_to_garbage_leads(raw_leads,duplicate_emails)
     raw_leads = assign_status_to_rest(raw_leads,duplicate_emails)
-    write_test_file('test_output.csv', raw_leads)   
+    write_test_file(raw_leads)   
     #assess_duplicates(raw_leads,stats)
     print "Process Complete"
 
