@@ -39,24 +39,26 @@ def raw_duplicate_count(duplicate_emails):
     return list_count
 
 
-#----Tagging the dataset with enriched info 
+#----Tagging the dataset with enriched info
 
-def assign_status_to_garbage_leads(raw_leads,emails):
-    garbage_lead = 0
+    fields = ["Lead ID", "iContact Contact Id", "First Name","Last Name","Email","Email Opt Out","Email Bounced Reason","Phone","Type","Position (Player)","Other Phone","Title","Lead Owner","Company / Account","Description","Created By","Lead Source","Rating","Street","Street Line 1","City","State/Province","Zip/Postal Code","Country","Data Group","Status","Dup Rationale", "Action",]
+
+def fill_empty_field_no_data_label(raw_leads):
     r_length = len(raw_leads)
     for i in range(r_length):
+        if raw_leads[i]['iContact Contact Id'] == '':
+            raw_leads[i]['iContact Contact Id'] = "No Data"
+        if raw_leads[i]['Street'] == '':
+            raw_leads[i]['Street'] = "No Data"
         if raw_leads[i]['Email'] == '':
-            raw_leads[i]['Email'] = 'No Email Provided'
-            raw_leads[i]['Data Group'] = 'Garbage Lead'
-            raw_leads[i]['Status'] = 'Purge'
-            raw_leads[i]['Action'] = 'Purge'
-            garbage_lead += 1
-    print garbage_lead
-    return raw_leads, garbage_lead
+            raw_leads[i]['Email'] = "No Data"
+
+    return raw_leads 
+           #lead_values = [lead[field] for field in fields] list comprehension where for all fields that are '' put No Data
 
 
 
-def assign_status_to_rest(raw_leads,duplicate_emails):
+def assign_status(raw_leads,duplicate_emails):
     duplicate_lead = 0
     good_lead = 0
     dupe_emails = []
@@ -77,39 +79,57 @@ def assign_status_to_rest(raw_leads,duplicate_emails):
             raw_leads[i]['Status'] = 'Retain'
             raw_leads[i]['Action'] = 'Retain'
             good_lead += 1
-    print good_lead, "Good Leads", duplicate_lead, "Duplicates with", len(dupe_emails),"unique email addresses"
+    print  "There are", good_lead, "Good Leads"
+    print "There are", duplicate_lead, "duplicates with", len(dupe_emails),"unique email addresses"
     return raw_leads
 
 
-def write_test_file(raw_leads):
-    output = raw_leads
-    csv_file = open('test_output.csv','w')
-    # writer = csv.writer("Lead ID,iContact Contact Id,First Name,Last Name,Email,Email Opt Out,Email Bounced Reason,Phone,Type,Position (Player),Other Phone,Title,Lead Owner,Company / Account,Description,Created By,Lead Source,Rating,Street,Street Line 1,City,State/Province,Zip/Postal Code,Country,Data Group,Status,Action")
-    # file.write("\n")
+def find_garbage_leads(raw_leads):
+    r_length = len(raw_leads)
+    garbage_lead = 0 
+    for i in range(r_length):
+        if raw_leads[i]['Email'] == 'No Data':
+            raw_leads[i]['Data Group'] = 'Garbage Lead'
+            raw_leads[i]['Status'] = 'Purge'
+            raw_leads[i]['Action'] = 'Purge'
+            garbage_lead += 1
+    print "There are", garbage_lead, "Garbage Leads. Garbage Leads have no email address."
+
+def data_output(raw_leads):
+    fields = ["Lead ID", "iContact Contact Id", "First Name","Last Name","Email","Email Opt Out","Email Bounced Reason","Phone","Type","Position (Player)","Other Phone","Title","Lead Owner","Company / Account","Description","Created By","Lead Source","Rating","Street","Street Line 1","City","State/Province","Zip/Postal Code","Country","Data Group","Status","Action"]
+
+    with open('staging_file_a.csv','wb') as csvfile:
+        writer = csv.writer(csvfile, quotechar=',', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(fields)
+        for lead in raw_leads:
+            lead_values = [lead[field] for field in fields]
+            writer.writerow(lead_values)
+
+def stats(raw_leads):
+    duplicate_lead = 0
+    good_lead = 0
+    garbage_lead = 0 
     r_length = len(raw_leads)
     for i in range(r_length):
-        print raw_leads[i]
-        for key,value in raw_leads[i].items():
-            
-            print key,value 
-        import pdb; pdb.set_trace()
-        break 
-
-
-    # for j in full[i]:
-    # line = str(j) + ',' + str(i) + '\n'
-    # csv.write(line)
-
+        if raw_leads[i]['Data Group'] == 'Duplicate Lead':
+            duplicate_lead += 1
+        if raw_leads[i]['Data Group'] == 'Good Lead':
+            good_lead += 1
+        if raw_leads[i]['Data Group'] == 'Garbage Lead':
+            garbage_lead += 1
+    return duplicate_lead, garbage_lead, good_lead
 
 def main():
     raw_leads = get_data()
     emails = get_unique_emails(raw_leads)
     duplicate_emails = find_duplicate_emails(raw_leads,emails)
     raw_duplicate_count(duplicate_emails)
-    assign_status_to_garbage_leads(raw_leads,duplicate_emails)
-    raw_leads = assign_status_to_rest(raw_leads,duplicate_emails)
-    write_test_file(raw_leads)   
-    #assess_duplicates(raw_leads,stats)
+    fill_empty_field_no_data_label(raw_leads)
+    assign_status(raw_leads,duplicate_emails)
+    find_garbage_leads(raw_leads)
+    
+    data_output(raw_leads)
+    print stats(raw_leads)
     print "Process Complete"
 
 if __name__ == "__main__":
