@@ -39,34 +39,70 @@ def raw_duplicate_count(duplicate_emails):
     return list_count
 
 
-def assign_status_to_lead(raw_leads,emails):
+def assign_status_to_garbage_leads(raw_leads,emails):
     garbage_lead = 0
-    duplicate_lead = 0
-    good_lead = 0 
     r_length = len(raw_leads)
     for i in range(r_length):
         if raw_leads[i]['Email'] == '':
             raw_leads[i]['Email'] = 'No Email Provided'
-            raw_leads[i]['Status'] = 'Garbage Lead'
+            raw_leads[i]['Data Group'] = 'Garbage Lead'
+            raw_leads[i]['Status'] = 'Purge'
+            raw_leads[i]['Action'] = 'Purge'
             garbage_lead += 1
-            break 
-        #         raw_leads[i]['Status'] = 'Duplicate Lead'
-        #         duplicate_lead += 1
-        # else:
-        #     raw_leads[i]['Status'] = 'Good Lead'
-        #     good_lead += 1
-    print garbage_lead,duplicate_lead,good_lead
-    return raw_leads, garbage_lead,duplicate_lead,good_lead
+    print garbage_lead
+    return raw_leads, garbage_lead
 
+
+
+def assign_status_to_rest(raw_leads,duplicate_emails):
+    duplicate_lead = 0
+    good_lead = 0
+    dupe_emails = []
+    dupes_length = len(duplicate_emails)
+    print dupes_length
+    for i in range(dupes_length):
+        dupe_email = duplicate_emails[i][0]
+        if dupe_email is not None:
+            dupe_emails.append(dupe_email)
+    r_length = len(raw_leads)
+    for i in range(r_length):
+        if raw_leads[i]['Email'] in dupe_emails:
+            raw_leads[i]['Data Group'] = 'Duplicate Lead'
+            raw_leads[i]['Status'] = 'Duplicate'
+            raw_leads[i]['Action'] = 'Pending'
+            duplicate_lead += 1
+        else:
+            raw_leads[i]['Data Group'] = 'Good Lead'
+            raw_leads[i]['Status'] = 'Retain'
+            raw_leads[i]['Action'] = 'Retain'
+            good_lead += 1
+    print raw_leads,duplicate_lead,good_lead,dupe_emails
+    return raw_leads, duplicate_lead, good_lead, dupe_emails
+
+def assess_duplicates(raw_leads,dupe_emails):
+    pass
+    # r_length = len(raw_leads)
+    # for i in range(r_length):
+    #     if raw_leads[i]['Email'] in dupe_emails:
+    #         print raw_leads[i]['First Name']
+    #         print raw_leads[i]['Last Name']
+    #     break 
+
+    # # for lead in raw_leads:
+    # #     if lead['Status'] == 'Duplicate':
+    # #         for i in range(duplicate_emails)
+    # #         print lead['First Name'],lead['Last Name'], 
+    # #         break 
 
 def main():
     raw_leads = get_data()
     emails = get_unique_emails(raw_leads)
     duplicate_emails = find_duplicate_emails(raw_leads,emails)
     raw_duplicate_count(duplicate_emails)
-    print assign_status_to_lead(raw_leads,duplicate_emails)
-
-
+    assign_status_to_garbage_leads(raw_leads,duplicate_emails)
+    stats = assign_status_to_rest(raw_leads,duplicate_emails)
+    print stats 
+    assess_duplicates(raw_leads,stats)
     print "Process Complete"
 
 if __name__ == "__main__":
