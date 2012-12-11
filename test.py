@@ -1,51 +1,22 @@
-import csv
-import collections 
+import model 
+output = mraw_leads
 
-#email_counter = collections.Counter()
+def writeOutput(filename, output):
+   #Open the file
+  file = open(filename, "w")
 
-data = 'trilogy_base.csv'
-f=open(data,'rU')
+  file.write("Lead ID,iContact Contact Id,First Name,Last Name,Email,Email Opt Out,Email Bounced Reason,Phone,Type,Position (Player),Other Phone,Title,Lead Owner,Company / Account,Description,Created By,Lead Source,Rating,Street,Street Line 1,City,State/Province,Zip/Postal Code,Country,Data Group,Status,Action")
+  file.write("\n")
 
-def get_data():
-    read_data=csv.DictReader(f,fieldnames=None)
-    raw_leads = list(read_data)
-    print len(raw_leads), "leads"
-    return raw_leads
-
-
-def get_unique_emails(raw_leads):
-    emails = {}
-    for row in raw_leads:
-        if row['Email'] in emails:
-            emails[row['Email']] += 1
-        else:
-            emails[row['Email']] = 1
-    print len(emails), "unique email addresses within", sum(emails.itervalues()), "leads"
-    return emails
-    
-def find_duplicate_emails(raw_leads,emails):
-    duplicate_emails = []
-    for key, value in emails.iteritems():
-        if value > 1:
-            duplicate_emails.append([key, value])
-    print len(duplicate_emails), "emails are duplicates"
-    return duplicate_emails
-
-def test(duplicate_emails):
-    list_count = 0
-    for list in duplicate_emails:
-        list_count += list[1]
-    print "duplicate emails appear", float(list_count)/len(duplicate_emails), "times, on average"
-    return list_count
+  for record in output:
+   print record
+   brea
+   for item in record:
+      itemAsString = str(item)
+      file.write(itemAsString)
+      file.write(",")
+      file.write("\n")
+file.close()
 
 
-
-def main():
-    raw_leads = get_data()
-    emails = get_unique_emails(raw_leads)
-    duplicate_emails = find_duplicate_emails(raw_leads,emails)
-    print test(duplicate_emails)
-
-if __name__ == "__main__":
-
-    main()
+writeOutput("test_output.csv", output)

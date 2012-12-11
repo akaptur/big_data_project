@@ -59,7 +59,6 @@ def assign_status_to_rest(raw_leads,duplicate_emails):
     good_lead = 0
     dupe_emails = []
     dupes_length = len(duplicate_emails)
-    print dupes_length
     for i in range(dupes_length):
         dupe_email = duplicate_emails[i][0]
         if dupe_email is not None:
@@ -76,12 +75,27 @@ def assign_status_to_rest(raw_leads,duplicate_emails):
             raw_leads[i]['Status'] = 'Retain'
             raw_leads[i]['Action'] = 'Retain'
             good_lead += 1
-    print raw_leads,duplicate_lead,good_lead,dupe_emails
-    return raw_leads, duplicate_lead, good_lead, dupe_emails
+    print good_lead, "Good Leads", duplicate_lead, "Duplicates with", len(dupe_emails),"unique email addresses"
+    return raw_leads
 
-def assess_duplicates(raw_leads,dupe_emails):
-    pass
-    # r_length = len(raw_leads)
+
+def write_test_file(filename, raw_leads):
+    output = raw_leads
+    file = open(filename, "w")
+    file.write("Lead ID,iContact Contact Id,First Name,Last Name,Email,Email Opt Out,Email Bounced Reason,Phone,Type,Position (Player),Other Phone,Title,Lead Owner,Company / Account,Description,Created By,Lead Source,Rating,Street,Street Line 1,City,State/Province,Zip/Postal Code,Country,Data Group,Status,Action")
+    file.write("\n")
+    r_length = len(raw_leads)
+    for i in range(r_length):
+        row = raw_leads[i].values()
+        item = str(row)
+        file.write(item)
+        file.write(",")
+        file.write("\n")
+    file.close()
+
+# def assess_duplicates(raw_leads,dupe_emails):
+#     pass
+#     # r_length = len(raw_leads)
     # for i in range(r_length):
     #     if raw_leads[i]['Email'] in dupe_emails:
     #         print raw_leads[i]['First Name']
@@ -100,9 +114,9 @@ def main():
     duplicate_emails = find_duplicate_emails(raw_leads,emails)
     raw_duplicate_count(duplicate_emails)
     assign_status_to_garbage_leads(raw_leads,duplicate_emails)
-    stats = assign_status_to_rest(raw_leads,duplicate_emails)
-    print stats 
-    assess_duplicates(raw_leads,stats)
+    raw_leads = assign_status_to_rest(raw_leads,duplicate_emails)
+    write_test_file('test_output.csv', raw_leads)   
+    #assess_duplicates(raw_leads,stats)
     print "Process Complete"
 
 if __name__ == "__main__":
