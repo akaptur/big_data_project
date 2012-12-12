@@ -48,13 +48,18 @@ def fill_empty_field_no_data_label(raw_leads):
     r_length = len(raw_leads)
     for i in range(r_length):
         raw_leads[i]['Lead Owner'] = 'Mitch Belisle'
+        if raw_leads[i]['Lead ID'] == '':
+            raw_leads[i]['Lead ID'] = "No Data"
         if raw_leads[i]['iContact Contact Id'] == '':
             raw_leads[i]['iContact Contact Id'] = "No Data"
         if raw_leads[i]['Street'] == '':
             raw_leads[i]['Street'] = "No Data"
         if raw_leads[i]['Email'] == '':
             raw_leads[i]['Email'] = "No Data"
-
+        if raw_leads[i]['City'] == '':
+            raw_leads[i]['City'] = "No Data"
+        if raw_leads[i]['State/Province'] == '':
+            raw_leads[i]['State/Province'] = "No Data"
     return raw_leads 
 
 #6 determine quality of lead & ssign preliminary status, action, dupe rationale,merge id reference
@@ -156,10 +161,13 @@ def dup_entries_grouped_by_email(dup_list):
 
 
 #10 - Comb each lead same email address and compare critical fields, starting with first and last name 
-def test(dup_entries_group):
+def test(dup_entries_group,raw_leads):
+    identical = 0
+    same_family = 0
+    pending = 0
     for key in dup_entries_group:
         nested_list_level = dup_entries_group[key]
-        print nested_list_level
+        #print nested_list_level #level
         lead_id_list = []
         icontact_list = []
         first_name_list = []
@@ -179,16 +187,58 @@ def test(dup_entries_group):
             last_name_list.append(last_name)
             city_list.append(city)
             state_list.append(state)
-        print icontact_list, lead_id_list, first_name_list,last_name_list,city_list,state_list
+        if all(x == first_name_list[0] for x in first_name_list) and all(y == last_name_list[0] for y in last_name_list):
+            #print first_name,last_name, 'Identical'
+            get_best_fields(lead_id_list,icontact_list,city_list,state_list)
+            identical += 1
 
-        #iterate over lists to:
-        # - determine Duplicate rationale
-        # - most   
+
+        elif all(x == first_name_list[0] for x in first_name_list) or all(y == last_name_list[0] for y in last_name_list):
+            #print 'Same Family'
+            get_best_fields(lead_id_list,icontact_list,city_list,state_list)
+            same_family += 1 #this will be assigned to Dupe Rationale
+        else:
+            #print 'Assessement Pending'
+            get_best_fields(lead_id_list,icontact_list,city_list,state_list)
+            pending += 1
+        #print lead_id_list,icontact_list,city_list,state_list
+
+    print identical, "identical lead(s)", same_family, "leads are the same family", pending, "are still pending evaluation"
+    return icontact_list, lead_id_list, first_name_list,last_name_list,
 
 
-        break 
-        #return icontact_list, lead_id_list, first_name_list,last_name_list,city_list,state_list
+def get_best_fields(lead_id_list,icontact_list,city_list,state_list):
+    best_fields_list = []
 
+    #lead_id
+    if all(x == lead_id_list[0] for x in lead_id_list):
+        best_fields_list.append(lead_id_list[0])
+    else:
+        lead_idlist = [item for item in lead_id_list if item != 'No Data']
+        best_fields_list.append(lead_id_list[0])
+
+    #icontact_list
+    if all(x == icontact_list[0] for x in icontact_list):
+        best_fields_list.append(icontact_list[0])
+    else:
+        icontact_list = [item for item in icontact_list if item != 'No Data']
+        best_fields_list.append(icontact_list[0])
+
+    #city_list 
+    if all(x == city_list[0] for x in city_list):
+        best_fields_list.append(city_list[0])
+    else:
+        city_list = [item for item in city_list if item != 'No Data']
+        best_fields_list.append(city_list[0])
+
+    #state_list
+    if all(x == state_list[0] for x in state_list):
+        best_fields_list.append(state_list[0])
+    else:
+        state_list = [item for item in state_list if item != 'No Data']
+        best_fields_list.append(state_list[0])
+
+    print best_fields_list
 
 
 ###### Main 
@@ -204,7 +254,7 @@ def main():
     print stats(raw_leads)
     dup_list = get_duplicate_list(raw_leads)
     dup_entries_group = dup_entries_grouped_by_email(dup_list)
-    test(dup_entries_group)
+    test(dup_entries_group,raw_leads)
 
 
     print "Process Complete"
