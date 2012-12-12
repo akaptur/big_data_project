@@ -189,17 +189,15 @@ def test(dup_entries_group,raw_leads):
             state_list.append(state)
         if all(x == first_name_list[0] for x in first_name_list) and all(y == last_name_list[0] for y in last_name_list):
             #print first_name,last_name, 'Identical'
-            get_best_fields(lead_id_list,icontact_list,city_list,state_list)
+            best_fields(lead_id_list,icontact_list,city_list,state_list)
             identical += 1
-
-
         elif all(x == first_name_list[0] for x in first_name_list) or all(y == last_name_list[0] for y in last_name_list):
             #print 'Same Family'
-            get_best_fields(lead_id_list,icontact_list,city_list,state_list)
+            best_fields(lead_id_list,icontact_list,city_list,state_list)
             same_family += 1 #this will be assigned to Dupe Rationale
         else:
             #print 'Assessement Pending'
-            get_best_fields(lead_id_list,icontact_list,city_list,state_list)
+            best_fields(lead_id_list,icontact_list,city_list,state_list)
             pending += 1
         #print lead_id_list,icontact_list,city_list,state_list
 
@@ -207,14 +205,15 @@ def test(dup_entries_group,raw_leads):
     return icontact_list, lead_id_list, first_name_list,last_name_list,
 
 
-def get_best_fields(lead_id_list,icontact_list,city_list,state_list):
+def best_fields(lead_id_list,icontact_list,city_list,state_list):
     best_fields_list = []
+    merge_lead_id = lead_id_list[0]
 
     #lead_id
     if all(x == lead_id_list[0] for x in lead_id_list):
         best_fields_list.append(lead_id_list[0])
     else:
-        lead_idlist = [item for item in lead_id_list if item != 'No Data']
+        lead_id_list = [item for item in lead_id_list if item != 'No Data']
         best_fields_list.append(lead_id_list[0])
 
     #icontact_list
@@ -223,14 +222,14 @@ def get_best_fields(lead_id_list,icontact_list,city_list,state_list):
     else:
         icontact_list = [item for item in icontact_list if item != 'No Data']
         best_fields_list.append(icontact_list[0])
-
+    
     #city_list 
     if all(x == city_list[0] for x in city_list):
         best_fields_list.append(city_list[0])
     else:
         city_list = [item for item in city_list if item != 'No Data']
         best_fields_list.append(city_list[0])
-
+    
     #state_list
     if all(x == state_list[0] for x in state_list):
         best_fields_list.append(state_list[0])
@@ -238,7 +237,9 @@ def get_best_fields(lead_id_list,icontact_list,city_list,state_list):
         state_list = [item for item in state_list if item != 'No Data']
         best_fields_list.append(state_list[0])
 
-    print best_fields_list
+    print best_fields_list,"\n", merge_lead_id, 'is the merge_lead_id'
+    return best_fields_list, merge_lead_id
+
 
 
 ###### Main 
