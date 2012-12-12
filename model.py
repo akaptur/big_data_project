@@ -187,25 +187,26 @@ def test(dup_entries_group,raw_leads):
             last_name_list.append(last_name)
             city_list.append(city)
             state_list.append(state)
+        #Identical
         if all(x == first_name_list[0] for x in first_name_list) and all(y == last_name_list[0] for y in last_name_list):
             #print first_name,last_name, 'Identical'
-            best_fields(lead_id_list,icontact_list,city_list,state_list)
+            best_field_selection(lead_id_list,icontact_list,city_list,state_list)
             identical += 1
+        #Same Family (potentially...)
         elif all(x == first_name_list[0] for x in first_name_list) or all(y == last_name_list[0] for y in last_name_list):
             #print 'Same Family'
-            best_fields(lead_id_list,icontact_list,city_list,state_list)
+            best_field_selection(lead_id_list,icontact_list,city_list,state_list)
             same_family += 1 #this will be assigned to Dupe Rationale
         else:
-            #print 'Assessement Pending'
-            best_fields(lead_id_list,icontact_list,city_list,state_list)
+            #print 'Unknown - Different Names'
+            best_field_selection(lead_id_list,icontact_list,city_list,state_list)
             pending += 1
         #print lead_id_list,icontact_list,city_list,state_list
 
     print identical, "identical lead(s)", same_family, "leads are the same family", pending, "are still pending evaluation"
-    return icontact_list, lead_id_list, first_name_list,last_name_list,
+    return icontact_list, lead_id_list, first_name_list,last_name_list,city_list,state_list
 
-
-def best_fields(lead_id_list,icontact_list,city_list,state_list):
+def best_field_selection(lead_id_list,icontact_list,city_list,state_list):
     best_fields_list = []
     merge_lead_id = lead_id_list[0]
 
@@ -239,7 +240,6 @@ def best_fields(lead_id_list,icontact_list,city_list,state_list):
 
     print best_fields_list,"\n", merge_lead_id, 'is the merge_lead_id'
     return best_fields_list, merge_lead_id
-
 
 
 ###### Main 
