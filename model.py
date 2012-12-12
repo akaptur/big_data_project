@@ -155,16 +155,39 @@ def dup_entries_grouped_by_email(dup_list):
     return dup_entries_by_email
 
 
-#10 - Comb through each entry and compare critical fields 
+#10 - Comb each lead same email address and compare critical fields, starting with first and last name 
 def test(dup_entries_group):
     for key in dup_entries_group:
-        for i in range(len(dup_entries_group[key])):
-            single_list_level = dup_entries_group[key][i]
-            #print single_list_level, len(single_list_level)
-            for j in range(len(dup_entries_group[key][i])):
-                field_level = dup_entries_group[key][i][j]
-                print field_level
-                break 
+        nested_list_level = dup_entries_group[key]
+        print nested_list_level
+        lead_id_list = []
+        icontact_list = []
+        first_name_list = []
+        last_name_list = []
+        city_list = []
+        state_list = []
+        for field in nested_list_level:
+            lead_id = field[0]
+            icontact = field[1]
+            first_name = field[2]
+            last_name = field[3]
+            city = field[20]
+            state =field[21]
+            lead_id_list.append(lead_id)
+            icontact_list.append(icontact)
+            first_name_list.append(first_name)
+            last_name_list.append(last_name)
+            city_list.append(city)
+            state_list.append(state)
+        print icontact_list, lead_id_list, first_name_list,last_name_list,city_list,state_list
+
+        #iterate over lists to:
+        # - determine Duplicate rationale
+        # - most   
+
+
+        break 
+        #return icontact_list, lead_id_list, first_name_list,last_name_list,city_list,state_list
 
 
 
