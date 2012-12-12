@@ -238,7 +238,7 @@ def best_field_selection(lead_id_list,icontact_list,city_list,state_list):
         state_list = [item for item in state_list if item != 'No Data']
         best_fields_list.append(state_list[0])
 
-    print best_fields_list,"\n", merge_lead_id, 'is the merge_lead_id'
+    print "The following records were merged\n", lead_id_list, "\n",  merge_lead_id, 'is the merge_lead_id.\n', best_fields_list, "are more likely the best fields for the merged row"
     return best_fields_list, merge_lead_id
 
 
