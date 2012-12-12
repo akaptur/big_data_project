@@ -161,7 +161,7 @@ def dup_entries_grouped_by_email(dup_list):
 
 
 #10 - Comb each lead same email address and compare critical fields, starting with first and last name 
-def test(dup_entries_group,raw_leads):
+def assess_dup_entries(dup_entries_group,raw_leads):
     identical = 0
     same_family = 0
     pending = 0
@@ -190,23 +190,20 @@ def test(dup_entries_group,raw_leads):
         #Identical
         if all(x == first_name_list[0] for x in first_name_list) and all(y == last_name_list[0] for y in last_name_list):
             #print first_name,last_name, 'Identical'
-            best_field_selection(lead_id_list,icontact_list,city_list,state_list)
+            best_field_selection(lead_id_list,icontact_list,city_list,state_list,raw_leads)
             identical += 1
         #Same Family (potentially...)
         elif all(x == first_name_list[0] for x in first_name_list) or all(y == last_name_list[0] for y in last_name_list):
-            #print 'Same Family'
-            best_field_selection(lead_id_list,icontact_list,city_list,state_list)
+            best_field_selection(lead_id_list,icontact_list,city_list,state_list,raw_leads)
             same_family += 1 #this will be assigned to Dupe Rationale
         else:
-            #print 'Unknown - Different Names'
-            best_field_selection(lead_id_list,icontact_list,city_list,state_list)
+        #'Unknown - Different Names'
+            best_field_selection(lead_id_list,icontact_list,city_list,state_list,raw_leads)
             pending += 1
-        #print lead_id_list,icontact_list,city_list,state_list
-
-    print identical, "identical lead(s)", same_family, "leads are the same family", pending, "are still pending evaluation"
+   # print identical, "identical lead(s).", same_family, "leads are most kids that from the same family", pending, "are still pending evaluation"
     return icontact_list, lead_id_list, first_name_list,last_name_list,city_list,state_list
 
-def best_field_selection(lead_id_list,icontact_list,city_list,state_list):
+def best_field_selection(lead_id_list,icontact_list,city_list,state_list,raw_leads):
     best_fields_list = []
     merge_lead_id = lead_id_list[0]
 
@@ -238,8 +235,31 @@ def best_field_selection(lead_id_list,icontact_list,city_list,state_list):
         state_list = [item for item in state_list if item != 'No Data']
         best_fields_list.append(state_list[0])
 
-    print "The following records were merged\n", lead_id_list, "\n",  merge_lead_id, 'is the merge_lead_id.\n', best_fields_list, "are more likely the best fields for the merged row"
+    update_raw_leads(raw_leads,best_fields_list,merge_lead_id, lead_id_list)
+    
+    #print "The following records were merged\n", lead_id_list, "\n",  merge_lead_id, 'is the merge_lead_id.\n', best_fields_list, "are more likely the best fields for critical fields in the merged row"
     return best_fields_list, merge_lead_id
+
+
+def update_raw_leads(raw_leads,best_fields_list,merge_lead_id,lead_id_list):
+    leads = raw_leads
+    best_fields = best_fields_list
+    merge_id = merge_lead_id
+    lead_ids_for_merge = lead_id_list[1:]
+    for lead in lead_id_list:
+        merge_id = lead_id_list[0]
+        r_length = len(raw_leads)
+        for i in range(r_length):
+            if raw_leads[i]['Lead ID'] == merge_id and best_fields[0] == merge_id:
+                raw_leads[i]['iContact Contact Id'] = best_fields[1]
+                raw_leads[i]['City'] = best_fields[2]
+                raw_leads[i]['State'] = best_fields[3]
+                raw_leads[i]['Duplicate Rationale'] = 'Test'
+                raw_leads[i]['Action'] = 'Retain'
+                raw_leads[i]['Action'] = 'Master Merge'
+                break
+    
+
 
 
 ###### Main 
@@ -255,8 +275,7 @@ def main():
     print stats(raw_leads)
     dup_list = get_duplicate_list(raw_leads)
     dup_entries_group = dup_entries_grouped_by_email(dup_list)
-    test(dup_entries_group,raw_leads)
-
+    assess_dup_entries(dup_entries_group,raw_leads)
 
     print "Process Complete"
 
