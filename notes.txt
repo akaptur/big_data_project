@@ -10,3 +10,5 @@
      - Family (same last name)
         -pick 1st full field with icontact_id 
 5) 
+
+Sit down and think about the 10 steps 

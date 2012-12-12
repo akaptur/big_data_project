@@ -2,11 +2,7 @@ import csv
 from collections import *
 from itertools import * 
 
-
-#email_counter = collections.Counter()
-
-
-# Import Data from base file 
+#1 Import Data from base file 
 data = 'trilogy_base.csv'
 f=open(data,'rU')
 
@@ -16,7 +12,7 @@ def get_data():
     print len(raw_leads), "leads"
     return raw_leads
 
-#Find all Unique email addresses & count how many times they appear  
+#2 Find all Unique email addresses & count how many times they appear  
 def get_unique_emails(raw_leads):
     emails = {}
     for row in raw_leads:
@@ -27,7 +23,7 @@ def get_unique_emails(raw_leads):
     print len(emails), "unique email addresses within", sum(emails.itervalues()), "leads"
     return emails
 
-#create separate list for duplicates 
+#3 Create separate list for duplicates 
 def find_duplicate_emails(raw_leads,emails):
     duplicate_emails = []
     for key, value in emails.iteritems():   
@@ -36,7 +32,7 @@ def find_duplicate_emails(raw_leads,emails):
     print len(duplicate_emails), "emails are duplicates"
     return duplicate_emails
 
-#how many duplicates in aggregrate 
+#4 how many duplicates in aggregrate 
 def raw_duplicate_count(duplicate_emails):
     list_count = 0
     for list in duplicate_emails:
@@ -47,7 +43,7 @@ def raw_duplicate_count(duplicate_emails):
 #--------->
 
 
-#add data to key empty fields 
+#5 add data to critical empty fields 
 def fill_empty_field_no_data_label(raw_leads):
     r_length = len(raw_leads)
     for i in range(r_length):
@@ -61,7 +57,7 @@ def fill_empty_field_no_data_label(raw_leads):
 
     return raw_leads 
 
-#determine quality of lead + assign preliminary status, action, dupe rationale,merge id reference
+#6 determine quality of lead & ssign preliminary status, action, dupe rationale,merge id reference
 def assign_status(raw_leads,duplicate_emails):
     duplicate_lead = 0
     good_lead = 0
@@ -92,7 +88,7 @@ def assign_status(raw_leads,duplicate_emails):
     print "There are", duplicate_lead, "duplicates with", len(dupe_emails),"unique email addresses"
     return raw_leads, dupe_emails
 
-#find garbage leads -- this will be refactored and inserted into assign status
+#6a Find garbage leads -- this will be refactored and inserted into assign status
 def find_garbage_leads(raw_leads):
     r_length = len(raw_leads)
     garbage_lead = 0 
@@ -107,7 +103,7 @@ def find_garbage_leads(raw_leads):
     print "There are", garbage_lead, "Garbage Leads. Garbage Leads have no email address."
     return raw_leads
 
-#create stage_file csv
+#7 Create 1st Stage File for Review 
 def data_output(raw_leads):
     fields = ["Lead ID", "iContact Contact Id", "First Name","Last Name","Email","Email Opt Out","Email Bounced Reason","Phone","Type","Position (Player)","Other Phone","Title","Lead Owner","Company / Account","Description","Created By","Lead Source","Rating","Street","Street Line 1","City","State/Province","Zip/Postal Code","Country","Data Group","Status","Dupe Rationale", "Action", "Merge Lead ID"]
 
@@ -118,7 +114,7 @@ def data_output(raw_leads):
             lead_values = [lead[field] for field in fields]
             writer.writerow(lead_values)
 
-#provide stats to support tie-out 
+#8 Provide stats to support tie-out 
 def stats(raw_leads):
     duplicate_lead = 0
     good_lead = 0
@@ -133,6 +129,8 @@ def stats(raw_leads):
             garbage_lead += 1
     return duplicate_lead, garbage_lead, good_lead
 
+
+#9 Create a Dictionary (hash_table) with email & nested list of all lead_data
 
 def get_duplicate_list(raw_leads):
     dup_list = []
@@ -156,12 +154,21 @@ def dup_entries_grouped_by_email(dup_list):
             dup_entries_by_email[email] = [lead] #create a list 
     return dup_entries_by_email
 
+
+#10 - Comb through each entry and compare critical fields 
 def test(dup_entries_group):
-    for key,value in dup_entries_group.iteritems():
-        print key,value 
-        break 
+    for key in dup_entries_group:
+        for i in range(len(dup_entries_group[key])):
+            single_list_level = dup_entries_group[key][i]
+            #print single_list_level, len(single_list_level)
+            for j in range(len(dup_entries_group[key][i])):
+                field_level = dup_entries_group[key][i][j]
+                print field_level
+                break 
 
 
+
+###### Main 
 def main():
     raw_leads = get_data()
     emails = get_unique_emails(raw_leads)
