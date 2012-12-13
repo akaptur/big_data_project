@@ -50,18 +50,10 @@ def fill_empty_field_no_data_label(raw_leads):
     r_length = len(raw_leads)
     for i in range(r_length):
         raw_leads[i]['Lead Owner'] = 'Mitch Belisle'
-        if raw_leads[i]['Lead ID'] == '':
-            raw_leads[i]['Lead ID'] = "No Data"
-        if raw_leads[i]['iContact Contact Id'] == '':
-            raw_leads[i]['iContact Contact Id'] = "No Data"
-        if raw_leads[i]['Street'] == '':
-            raw_leads[i]['Street'] = "No Data"
-        if raw_leads[i]['Email'] == '':
-            raw_leads[i]['Email'] = "No Data"
-        if raw_leads[i]['City'] == '':
-            raw_leads[i]['City'] = "No Data"
-        if raw_leads[i]['State/Province'] == '':
-            raw_leads[i]['State/Province'] = "No Data"
+        key_list = ['Lead ID', 'iContact Contact Id', 'Street', 'Email', 'City', 'State/Province']
+        for key in key_list:
+            if not raw_leads[i][key]:
+                raw_leads[i][key] = "No Data"
     return raw_leads 
 
 #6 determine quality of lead & assign preliminary status, action, dupe rationale,merge id reference
