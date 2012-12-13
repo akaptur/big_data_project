@@ -62,7 +62,7 @@ def fill_empty_field_no_data_label(raw_leads):
             raw_leads[i]['State/Province'] = "No Data"
     return raw_leads 
 
-#6 determine quality of lead & ssign preliminary status, action, dupe rationale,merge id reference
+#6 determine quality of lead & assign preliminary status, action, dupe rationale,merge id reference
 def assign_status(raw_leads,duplicate_emails):
     duplicate_lead = 0
     good_lead = 0
@@ -200,7 +200,7 @@ def assess_dup_entries(dup_entries_group,raw_leads):
         #'Unknown - Different Names'
             best_field_selection(lead_id_list,icontact_list,city_list,state_list,raw_leads)
             pending += 1
-   # print identical, "identical lead(s).", same_family, "leads are most kids that from the same family", pending, "are still pending evaluation"
+    #print identical, "identical lead(s).", same_family, "leads are most kids that from the same family", pending, "are still pending evaluation"
     return icontact_list, lead_id_list, first_name_list,last_name_list,city_list,state_list
 
 def best_field_selection(lead_id_list,icontact_list,city_list,state_list,raw_leads):
@@ -237,7 +237,7 @@ def best_field_selection(lead_id_list,icontact_list,city_list,state_list,raw_lea
 
     update_raw_leads(raw_leads,best_fields_list,merge_lead_id, lead_id_list)
     
-    #print "The following records were merged\n", lead_id_list, "\n",  merge_lead_id, 'is the merge_lead_id.\n', best_fields_list, "are more likely the best fields for critical fields in the merged row"
+    print "The following records were merged\n", lead_id_list, "\n",  merge_lead_id, 'is the merge_lead_id.\n', best_fields_list, "are more likely the best fields for critical fields in the merged row"
     return best_fields_list, merge_lead_id
 
 
@@ -258,8 +258,6 @@ def update_raw_leads(raw_leads,best_fields_list,merge_lead_id,lead_id_list):
                 raw_leads[i]['Action'] = 'Retain'
                 raw_leads[i]['Action'] = 'Master Merge'
                 break
-    
-
 
 
 ###### Main 
