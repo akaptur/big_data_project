@@ -27,13 +27,11 @@ def get_unique_emails(raw_leads):
     return unique_emails
 
 #3 Create separate list for duplicates 
-def find_duplicate_emails(raw_leads,emails):
-    duplicate_emails = []
-    for key, value in emails.iteritems():   
-        if value > 1:
-            duplicate_emails.append([key, value])
+def find_duplicate_emails(emails):
+    duplicate_emails = [(k, v) for (k, v) in emails.iteritems() if v > 1]
     print len(duplicate_emails), "emails are duplicates"
     return duplicate_emails
+
 
 #4 how many duplicates in aggregrate 
 def raw_duplicate_count(duplicate_emails):
@@ -321,7 +319,7 @@ def stage_file_with_updates(raw_leads):
 def main():
     raw_leads = get_data()
     emails = get_unique_emails(raw_leads)
-    duplicate_emails = find_duplicate_emails(raw_leads,emails)
+    duplicate_emails = find_duplicate_emails(emails)
     raw_duplicate_count(duplicate_emails)
     fill_empty_field_no_data_label(raw_leads)
     assign_status(raw_leads,duplicate_emails)
