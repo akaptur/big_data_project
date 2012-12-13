@@ -161,7 +161,7 @@ def dup_entries_grouped_by_email(dup_list):
 
 
 #10 - Comb each lead same email address and compare critical fields, starting with first and last name 
-def assess_dup_entries(dup_entries_group,raw_leads):
+def assess_duplicate_entries(dup_entries_group,raw_leads):
     identical = 0
     same_family = 0
     pending = 0
@@ -239,7 +239,7 @@ def best_field_selection(lead_id_list,icontact_list,city_list,state_list,raw_lea
     update_duplicates_for_merge_purge(raw_leads,best_fields_list,merge_lead_id, lead_id_list)
     
     #print "The following records were merged\n", lead_id_list, "\n",  merge_lead_id, 'is the merge_lead_id.\n', best_fields_list, "are more likely the best fields for critical fields in the merged row"
-    return best_fields_list, merge_lead_id
+    return raw_leads
 
 
 #11 - Update the merge_id within raw_leads with best_fields
@@ -258,7 +258,8 @@ def update_merged_duplicate_master(raw_leads,best_fields_list,merge_lead_id,lead
                 raw_leads[i]['State'] = best_fields[3]
                 raw_leads[i]['Duplicate Rationale'] = 'Test'
                 raw_leads[i]['Action'] = 'Retain'
-                raw_leads[i]['Merge Lead ID'] = 'Master Merge' 
+                raw_leads[i]['Merge Lead ID'] = 'Master Merge'
+    return raw_leads
 
 #12 - Assign 'Merge & Purge' to duplicates in lead_id_list and merge_id to Merge Lead ID (represents the retained duplicate)
 def update_duplicates_for_merge_purge(raw_leads,best_fields_list,merge_lead_id, lead_id_list):
@@ -273,13 +274,18 @@ def update_duplicates_for_merge_purge(raw_leads,best_fields_list,merge_lead_id, 
                 raw_leads[i]['Duplicate Rationale'] = 'TBD'
                 raw_leads[i]['Action'] = 'Merge & Purge'
                 raw_leads[i]['Merge Lead ID'] = lead_id_list[0]
-                print raw_leads[i]
-                break
-                pass
+    return raw_leads
 
 #13 - Create a new staging_file_b (Master with everything)
+def stage_file_with_updates(raw_leads):
+    fields = ["Lead ID", "iContact Contact Id", "First Name","Last Name","Email","Email Opt Out","Email Bounced Reason","Phone","Type","Position (Player)","Other Phone","Title","Lead Owner","Company / Account","Description","Created By","Lead Source","Rating","Street","Street Line 1","City","State/Province","Zip/Postal Code","Country","Data Group","Status","Dupe Rationale", "Action", "Merge Lead ID"]
 
-
+    with open('staging_file_b.csv','wb') as csvfile:
+        writer = csv.writer(csvfile, quotechar=',', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(fields)
+        for lead in raw_leads:
+            lead_values = [lead[field] for field in fields]
+            writer.writerow(lead_values)
 
 #14 - Create staging_file_retain, staging_file_merge_purge
 
@@ -302,7 +308,8 @@ def main():
     print stats(raw_leads)
     dup_list = get_duplicate_list(raw_leads)
     dup_entries_group = dup_entries_grouped_by_email(dup_list)
-    assess_dup_entries(dup_entries_group,raw_leads)
+    assess_duplicate_entries(dup_entries_group,raw_leads)
+    stage_file_with_updates(raw_leads)
 
     print "Process Complete"
 
