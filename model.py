@@ -1,6 +1,8 @@
 import csv
-from collections import *
-from itertools import * 
+import collections
+import itertools
+# from collections import *
+# from itertools import * 
 
 #1 Import Data from base file 
 data = 'trilogy_base.csv'
