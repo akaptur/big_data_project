@@ -16,13 +16,13 @@ def get_data():
 
 #2 Find all Unique email addresses & count how many times they appear  
 def get_unique_emails(raw_leads):
-    emails = {}
+    unique_emails = {}
     for row in raw_leads:
         if row['Email'] in emails:
             emails[row['Email']] += 1
         else:
             emails[row['Email']] = 1
-    print len(emails), "unique email addresses within", sum(emails.itervalues()), "leads"
+    print len(unique_emails), "unique email addresses within", sum(unique_emails.itervalues()), "leads"
     return emails
 
 #3 Create separate list for duplicates 
