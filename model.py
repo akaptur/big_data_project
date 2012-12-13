@@ -274,7 +274,10 @@ def update_duplicates_for_merge_purge(raw_leads,best_fields_list,merge_lead_id, 
 def stats(raw_leads):
     duplicate_lead = 0
     good_lead = 0
-    garbage_lead = 0 
+    garbage_lead = 0
+    retain = 0
+    purge = 0
+    merge_purge = 0
     r_length = len(raw_leads)
     for i in range(r_length):
         if raw_leads[i]['Data Group'] == 'Duplicate Lead':
