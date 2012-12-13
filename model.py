@@ -241,6 +241,7 @@ def best_field_selection(lead_id_list,icontact_list,city_list,state_list,raw_lea
     return best_fields_list, merge_lead_id
 
 
+#11 - Update the merge_id within raw_leads with best_fields
 def update_raw_leads(raw_leads,best_fields_list,merge_lead_id,lead_id_list):
     leads = raw_leads
     best_fields = best_fields_list
@@ -256,8 +257,26 @@ def update_raw_leads(raw_leads,best_fields_list,merge_lead_id,lead_id_list):
                 raw_leads[i]['State'] = best_fields[3]
                 raw_leads[i]['Duplicate Rationale'] = 'Test'
                 raw_leads[i]['Action'] = 'Retain'
-                raw_leads[i]['Action'] = 'Master Merge'
+                raw_leads[i]['Merge Lead ID'] = 'Master Merge'
                 break
+
+#12 - Assign 'Merge & Purge' duplicates in lead_id_list
+
+
+
+
+
+
+#13 - Create a new staging_file_b (Master with everything)
+
+
+
+#14 - Create staging_file_retain, staging_file_merge_purge
+
+
+
+
+
 
 
 ###### Main 
