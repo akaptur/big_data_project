@@ -1,8 +1,8 @@
 import csv
-import collections
-import itertools
-# from collections import *
-# from itertools import * 
+# import collections
+# import itertools
+from collections import *
+from itertools import * 
 
 #1 Import Data from base file 
 data = 'trilogy_base.csv'
@@ -24,7 +24,7 @@ def get_unique_emails(raw_leads):
         else:
             unique_emails[row['Email']] = 1
     print len(unique_emails), "unique email addresses within", sum(unique_emails.itervalues()), "leads"
-    return emails
+    return unique_emails
 
 #3 Create separate list for duplicates 
 def find_duplicate_emails(raw_leads,emails):
