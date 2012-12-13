@@ -12,16 +12,17 @@ def get_data():
     read_data=csv.DictReader(f,fieldnames=None)
     raw_leads = list(read_data)
     print len(raw_leads), "leads"
+    print raw_leads[0]
     return raw_leads
 
 #2 Find all Unique email addresses & count how many times they appear  
 def get_unique_emails(raw_leads):
     unique_emails = {}
     for row in raw_leads:
-        if row['Email'] in emails:
-            emails[row['Email']] += 1
+        if row['Email'] in unique_emails:
+            unique_emails[row['Email']] += 1
         else:
-            emails[row['Email']] = 1
+            unique_emails[row['Email']] = 1
     print len(unique_emails), "unique email addresses within", sum(unique_emails.itervalues()), "leads"
     return emails
 
