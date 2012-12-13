@@ -35,11 +35,10 @@ def find_duplicate_emails(emails):
 
 #4 how many duplicates in aggregrate 
 def raw_duplicate_count(duplicate_emails):
-    list_count = 0
-    for each_list in duplicate_emails:
-        list_count += each_list[1]
-    print "Duplicate emails appear", float(list_count)/len(duplicate_emails), "times, on average"
-    return list_count
+    counts = [count for (email, count) in duplicate_emails]
+    total_duplicates = sum(counts)
+    print "Duplicate emails appear", float(total_duplicates)/len(duplicate_emails), "times, on average"
+    return total_duplicates
 
 #--------->
 
