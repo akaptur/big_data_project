@@ -120,19 +120,19 @@ def find_garbage_leads(raw_leads):
 #             writer.writerow(lead_values)
 
 #8 Provide stats to support tie-out 
-def stats(raw_leads):
-    duplicate_lead = 0
-    good_lead = 0
-    garbage_lead = 0 
-    r_length = len(raw_leads)
-    for i in range(r_length):
-        if raw_leads[i]['Data Group'] == 'Duplicate Lead':
-            duplicate_lead += 1
-        if raw_leads[i]['Data Group'] == 'Good Lead':
-            good_lead += 1
-        if raw_leads[i]['Data Group'] == 'Garbage Lead':
-            garbage_lead += 1
-    return duplicate_lead, garbage_lead, good_lead
+# def stats(raw_leads):
+#     duplicate_lead = 0
+#     good_lead = 0
+#     garbage_lead = 0 
+#     r_length = len(raw_leads)
+#     for i in range(r_length):
+#         if raw_leads[i]['Data Group'] == 'Duplicate Lead':
+#             duplicate_lead += 1
+#         if raw_leads[i]['Data Group'] == 'Good Lead':
+#             good_lead += 1
+#         if raw_leads[i]['Data Group'] == 'Garbage Lead':
+#             garbage_lead += 1
+#     return duplicate_lead, garbage_lead, good_lead
 
 
 #9 Create a Dictionary (hash_table) with email & nested list of all lead_data
@@ -275,6 +275,34 @@ def update_duplicates_for_merge_purge(raw_leads,best_fields_list,merge_lead_id, 
                 raw_leads[i]['Merge Lead ID'] = merge_id
  
 
+#14 - Create staging_file_retain, staging_file_merge_purge
+
+def stats(raw_leads):
+    duplicate_lead = 0
+    good_lead = 0
+    garbage_lead = 0 
+    r_length = len(raw_leads)
+    for i in range(r_length):
+        if raw_leads[i]['Data Group'] == 'Duplicate Lead':
+            duplicate_lead += 1
+        if raw_leads[i]['Data Group'] == 'Good Lead':
+            good_lead += 1
+        if raw_leads[i]['Data Group'] == 'Garbage Lead':
+            garbage_lead += 1
+    for i in range(r_length):
+        if raw_leads[i]['Action'] == 'Purge':
+            purge += 1
+        if raw_leads[i]['Action'] == 'Merge & Purge':
+            merge_purge += 1
+        if raw_leads[i]['Action'] == 'Retain':
+            retain += 1
+    print purge, "leads should be purged \n"
+    print merge_purge "leads should be merged & then purged"
+    print retain "leads should be retained. This includes a master merge lead with best selected data from duplicates"
+
+    return duplicate_lead, garbage_lead, good_lead, purge, merge_purge, retain
+
+
 #13 - Create a new staging_file_b (Master with everything)
 def stage_file_with_updates(raw_leads):
     fields = ["Lead ID", "iContact Contact Id", "First Name","Last Name","Email","Email Opt Out","Email Bounced Reason","Phone","Type","Position (Player)","Other Phone","Title","Lead Owner","Company / Account","Description","Created By","Lead Source","Rating","Street","Street Line 1","City","State/Province","Zip/Postal Code","Country","Data Group","Status","Dupe Rationale", "Action", "Merge Lead ID"]
@@ -288,11 +316,6 @@ def stage_file_with_updates(raw_leads):
 
 #14 - Create staging_file_retain, staging_file_merge_purge
 
-
-#15
-def new_stats(raw_leads):
-    from collections import Counter
-    print Counter([x[2] for x in data.values()])
 
 
 
