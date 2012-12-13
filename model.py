@@ -61,7 +61,7 @@ def assign_status(raw_leads,duplicate_emails):
     dupe_emails = []
     dupes_length = len(duplicate_emails)
     for i in range(dupes_length):
-        dupe_email = duplicate_emails[i][0]
+        dupe_email, count = duplicate_emails[i]
         if dupe_email is not None:
             dupe_emails.append(dupe_email)
     r_length = len(raw_leads)
