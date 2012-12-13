@@ -299,8 +299,8 @@ def stats(raw_leads):
         if raw_leads[i]['Action'] == 'Retain':
             retain += 1
     print purge, "leads should be purged \n"
-    print merge_purge "leads should be merged & then purged"
-    print retain "leads should be retained. This includes a master merge lead with best selected data from duplicates"
+    print merge_purge, "leads should be merged & then purged"
+    print retain, "leads should be retained. This includes a master merge lead with best selected data from duplicates"
 
     return duplicate_lead, garbage_lead, good_lead, purge, merge_purge, retain
 
