@@ -14,6 +14,6 @@ data set.
 
 
 Todos:
--Code should be less procedural
--Code should be more general and less "specific" to this cleansing task (so that major pieces are available for reuse)
--I want to learn how to use some of Python's built-ins to increase performance and reduce the number of lines
+- Code should be less procedural
+- Code should be more general and less "specific" to this cleansing task (so that major pieces are available for reuse)
+- I want to learn how to use some of Python's built-ins to increase performance and reduce the number of lines
