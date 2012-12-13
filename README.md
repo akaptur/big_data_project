@@ -1,5 +1,6 @@
 Stats:
-- ~45,000 leads reduced to ~26,000 solid leads.
+- ~45,000 leads reduced to ~26,000 unique leads
+- Duplicate leads were removed and replaced by one lead that merges "the best" information for all into one row.
 
 Data Cleansing Project:
 - Determine which leads are garbage, good or duplicates and assign an action.
