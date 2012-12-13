@@ -235,18 +235,19 @@ def best_field_selection(lead_id_list,icontact_list,city_list,state_list,raw_lea
         state_list = [item for item in state_list if item != 'No Data']
         best_fields_list.append(state_list[0])
 
-    update_raw_leads(raw_leads,best_fields_list,merge_lead_id, lead_id_list)
+    update_merged_duplicate_master(raw_leads,best_fields_list,merge_lead_id, lead_id_list)
+    update_duplicates_for_merge_purge(raw_leads,best_fields_list,merge_lead_id, lead_id_list)
     
-    print "The following records were merged\n", lead_id_list, "\n",  merge_lead_id, 'is the merge_lead_id.\n', best_fields_list, "are more likely the best fields for critical fields in the merged row"
+    #print "The following records were merged\n", lead_id_list, "\n",  merge_lead_id, 'is the merge_lead_id.\n', best_fields_list, "are more likely the best fields for critical fields in the merged row"
     return best_fields_list, merge_lead_id
 
 
 #11 - Update the merge_id within raw_leads with best_fields
-def update_raw_leads(raw_leads,best_fields_list,merge_lead_id,lead_id_list):
+def update_merged_duplicate_master(raw_leads,best_fields_list,merge_lead_id,lead_id_list):
     leads = raw_leads
     best_fields = best_fields_list
     merge_id = merge_lead_id
-    lead_ids_for_merge = lead_id_list[1:]
+    lead_ids_for_merge = lead_id_list[1:] 
     for lead in lead_id_list:
         merge_id = lead_id_list[0]
         r_length = len(raw_leads)
@@ -257,15 +258,24 @@ def update_raw_leads(raw_leads,best_fields_list,merge_lead_id,lead_id_list):
                 raw_leads[i]['State'] = best_fields[3]
                 raw_leads[i]['Duplicate Rationale'] = 'Test'
                 raw_leads[i]['Action'] = 'Retain'
-                raw_leads[i]['Merge Lead ID'] = 'Master Merge'
+                raw_leads[i]['Merge Lead ID'] = 'Master Merge' 
+
+#12 - Assign 'Merge & Purge' to duplicates in lead_id_list and merge_id to Merge Lead ID (represents the retained duplicate)
+def update_duplicates_for_merge_purge(raw_leads,best_fields_list,merge_lead_id, lead_id_list):
+    leads = raw_leads
+    best_fields = best_fields_list
+    lead_ids_for_merge = lead_id_list[1:]
+    for lead in lead_id_list:
+        merge_id = lead_id_list[0]
+        r_length = len(raw_leads)
+        for i in range(r_length):
+            if raw_leads[i]['Lead ID'] == lead and lead != merge_id:
+                raw_leads[i]['Duplicate Rationale'] = 'TBD'
+                raw_leads[i]['Action'] = 'Merge & Purge'
+                raw_leads[i]['Merge Lead ID'] = lead_id_list[0]
+                print raw_leads[i]
                 break
-
-#12 - Assign 'Merge & Purge' duplicates in lead_id_list
-
-
-
-
-
+                pass
 
 #13 - Create a new staging_file_b (Master with everything)
 
