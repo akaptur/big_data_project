@@ -289,6 +289,12 @@ def stage_file_with_updates(raw_leads):
 #14 - Create staging_file_retain, staging_file_merge_purge
 
 
+#15
+def new_stats(raw_leads):
+    from collections import Counter
+    print Counter([x[2] for x in data.values()])
+
+
 
 ###### Main 
 def main():
