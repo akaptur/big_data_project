@@ -321,7 +321,7 @@ def main():
     duplicate_emails = find_duplicate_emails(emails)
     total_duplicates = raw_duplicate_count(duplicate_emails)
     fill_empty_field_no_data_label(raw_leads)
-    assign_status(raw_leads,duplicate_emails)
+    raw_lead, duplicate_emails = assign_status(raw_leads,duplicate_emails)
     find_garbage_leads(raw_leads)
     #data_output(raw_leads)
     print stats(raw_leads)
