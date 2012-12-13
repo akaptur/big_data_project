@@ -319,7 +319,7 @@ def main():
     raw_leads = get_data()
     emails = get_unique_emails(raw_leads)
     duplicate_emails = find_duplicate_emails(emails)
-    raw_duplicate_count(duplicate_emails)
+    total_duplicates = raw_duplicate_count(duplicate_emails)
     fill_empty_field_no_data_label(raw_leads)
     assign_status(raw_leads,duplicate_emails)
     find_garbage_leads(raw_leads)
