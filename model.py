@@ -108,16 +108,16 @@ def find_garbage_leads(raw_leads):
     print "There are", garbage_lead, "Garbage Leads. Garbage Leads have no email address."
     return raw_leads
 
-#7 Create 1st Stage File for Review 
-def data_output(raw_leads):
-    fields = ["Lead ID", "iContact Contact Id", "First Name","Last Name","Email","Email Opt Out","Email Bounced Reason","Phone","Type","Position (Player)","Other Phone","Title","Lead Owner","Company / Account","Description","Created By","Lead Source","Rating","Street","Street Line 1","City","State/Province","Zip/Postal Code","Country","Data Group","Status","Dupe Rationale", "Action", "Merge Lead ID"]
+# #7 Create 1st Stage File for Review 
+# def data_output(raw_leads):
+#     fields = ["Lead ID", "iContact Contact Id", "First Name","Last Name","Email","Email Opt Out","Email Bounced Reason","Phone","Type","Position (Player)","Other Phone","Title","Lead Owner","Company / Account","Description","Created By","Lead Source","Rating","Street","Street Line 1","City","State/Province","Zip/Postal Code","Country","Data Group","Status","Dupe Rationale", "Action", "Merge Lead ID"]
 
-    with open('staging_file_a.csv','wb') as csvfile:
-        writer = csv.writer(csvfile, quotechar=',', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(fields)
-        for lead in raw_leads:
-            lead_values = [lead[field] for field in fields]
-            writer.writerow(lead_values)
+#     with open('staging_file_a.csv','wb') as csvfile:
+#         writer = csv.writer(csvfile, quotechar=',', quoting=csv.QUOTE_MINIMAL)
+#         writer.writerow(fields)
+#         for lead in raw_leads:
+#             lead_values = [lead[field] for field in fields]
+#             writer.writerow(lead_values)
 
 #8 Provide stats to support tie-out 
 def stats(raw_leads):
@@ -299,7 +299,7 @@ def main():
     fill_empty_field_no_data_label(raw_leads)
     assign_status(raw_leads,duplicate_emails)
     find_garbage_leads(raw_leads)
-    data_output(raw_leads)
+    #data_output(raw_leads)
     print stats(raw_leads)
     dup_list = get_duplicate_list(raw_leads)
     dup_entries_group = dup_entries_grouped_by_email(dup_list)
